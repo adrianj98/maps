@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.mapbox.rctmgl.components.navigation.RCTMGLNativeNavigationManager;
 import com.mapbox.rctmgl.components.annotation.RCTMGLCalloutManager;
 import com.mapbox.rctmgl.components.annotation.RCTMGLPointAnnotationManager;
 import com.mapbox.rctmgl.components.annotation.RCTMGLMarkerViewManager;
@@ -53,6 +54,7 @@ public class RCTMGLPackage implements ReactPackage {
         modules.add(new RCTMGLLocationModule(reactApplicationContext));
         modules.add(new RCTMGLLogging(reactApplicationContext));
 
+
         return modules;
     }
 
@@ -74,6 +76,7 @@ public class RCTMGLPackage implements ReactPackage {
         managers.add(new RCTMGLPointAnnotationManager(reactApplicationContext));
         managers.add(new RCTMGLCalloutManager());
         managers.add(new RCTMGLNativeUserLocationManager());
+        managers.add(new RCTMGLNativeNavigationManager());
 
         // sources
         managers.add(new RCTMGLVectorSourceManager(reactApplicationContext));
