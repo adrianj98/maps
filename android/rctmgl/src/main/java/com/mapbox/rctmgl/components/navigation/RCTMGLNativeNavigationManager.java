@@ -24,12 +24,17 @@ public class RCTMGLNativeNavigationManager extends ViewGroupManager<RCTMGLNative
     }
 
     public Map getExportedCustomBubblingEventTypeConstants() {
-        return MapBuilder.builder().put(
-                "topRoutesReady",
-                MapBuilder.of(
-                        "phasedRegistrationNames",
-                        MapBuilder.of("bubbled", "onRoutesReady")
-                )
+        return MapBuilder.builder()
+                        .put("topRoutesReady",
+                            MapBuilder.of(
+                                    "phasedRegistrationNames",
+                                    MapBuilder.of("bubbled", "onRoutesReady")
+                            ))
+                        .put("topRouteProgress",
+                            MapBuilder.of(
+                                    "phasedRegistrationNames",
+                                    MapBuilder.of("bubbled", "onRouteProgress"))
+
         ).build();
     }
 

@@ -23,11 +23,13 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.navigation.base.internal.extensions.MapboxRouteOptionsUtils;
 import com.mapbox.navigation.base.internal.route.RouteUrl;
 import com.mapbox.navigation.base.options.NavigationOptions;
+import com.mapbox.navigation.base.trip.model.RouteProgress;
 import com.mapbox.navigation.core.MapboxNavigation;
 import com.mapbox.navigation.core.MapboxNavigationProvider;
 import com.mapbox.api.directions.v5.models.RouteOptions;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback;
+import com.mapbox.navigation.core.trip.session.RouteProgressObserver;
 import com.mapbox.navigation.ui.OnNavigationReadyCallback;
 import com.mapbox.navigation.ui.camera.NavigationCamera;
 import com.mapbox.navigation.ui.listeners.NavigationListener;
@@ -54,6 +56,19 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
     private List<Point> navPoints;
     private String accessT = "pk.eyJ1IjoiYWRyaWFuaiIsImEiOiJja3U3MzczNDIyYmdzMnZxZ2V4NGVybjFyIn0.MJFUX8Ubizy0yaf4jGiXaA";
 
+
+    private RouteProgressObserver routeProgressObserver = new RouteProgressObserver() {
+        @Override
+        public void onRouteProgressChanged(RouteProgress routeProgress) {
+            String routeProgressString = routeProgress.toString();
+            WritableMap event = Arguments.createMap();
+            event.putString("progress", routeProgressString);
+            ReactContext reactContext = (ReactContext)getContext();
+            reactContext
+                    .getJSModule(RCTEventEmitter.class)
+                    .receiveEvent(getId(), "topRouteProgress", event);
+        }  
+        };
     private RoutesRequestCallback routesReqCallback = new RoutesRequestCallback() {
         @Override
         public void onRoutesReady(List<? extends DirectionsRoute> routes) {
