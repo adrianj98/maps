@@ -3,6 +3,7 @@ package com.mapbox.rctmgl.components.navigation;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.location.Location;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
@@ -11,9 +12,9 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.mapbox.api.directions.v5.models.BannerInstructions;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.geojson.Point;
-import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
@@ -23,19 +24,17 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.navigation.base.internal.extensions.MapboxRouteOptionsUtils;
 import com.mapbox.navigation.base.internal.route.RouteUrl;
 import com.mapbox.navigation.base.options.NavigationOptions;
+import com.mapbox.navigation.base.trip.model.RouteLegProgress;
 import com.mapbox.navigation.base.trip.model.RouteProgress;
 import com.mapbox.navigation.core.MapboxNavigation;
 import com.mapbox.navigation.core.MapboxNavigationProvider;
 import com.mapbox.api.directions.v5.models.RouteOptions;
-import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback;
+import com.mapbox.navigation.core.trip.session.LocationObserver;
 import com.mapbox.navigation.core.trip.session.RouteProgressObserver;
-import com.mapbox.navigation.ui.OnNavigationReadyCallback;
 import com.mapbox.navigation.ui.camera.NavigationCamera;
-import com.mapbox.navigation.ui.listeners.NavigationListener;
 
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.Mapbox;
 
 import com.mapbox.navigation.ui.route.NavigationMapRoute;
 import com.mapbox.rctmgl.components.AbstractMapFeature;
@@ -57,32 +56,94 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
     private String accessT = "pk.eyJ1IjoiYWRyaWFuaiIsImEiOiJja3U3MzczNDIyYmdzMnZxZ2V4NGVybjFyIn0.MJFUX8Ubizy0yaf4jGiXaA";
 
 
+//    private sendMessage(String id, WritableMap Message){
+//        cache.computeIfAbsent(x, y -> y * 2);
+//    }
+    private int routeHash = 0;
+    public void sendRoute(DirectionsRoute route){
+        int newHash = route.hashCode();
+        if (newHash != routeHash) {
+            routeHash = newHash;
+            String jsonRoute = route.toJson();
+            WritableMap event = Arguments.createMap();
+            event.putString("route", jsonRoute);
+            ReactContext reactContext = (ReactContext) getContext();
+            reactContext
+                    .getJSModule(RCTEventEmitter.class)
+                    .receiveEvent(getId(), "topRoutesReady", event);
+        }
+    }
+
+    private LocationObserver locationObserver = new LocationObserver() {
+
+        @Override
+        public void onRawLocationChanged(Location rawLocation) {
+            WritableMap event = Arguments.createMap();
+
+            event.putDouble("latitude", rawLocation.getLatitude());
+            event.putDouble("longitude", rawLocation.getLongitude());
+            event.putDouble("bearing", rawLocation.getBearing());
+            event.putDouble("altitude", rawLocation.getAltitude());
+            event.putDouble("speed", rawLocation.getSpeed());
+
+            ReactContext reactContext = (ReactContext)getContext();
+            reactContext
+                    .getJSModule(RCTEventEmitter.class)
+                    .receiveEvent(getId(), "topLocation", event);
+        }
+
+        @Override
+        public void onEnhancedLocationChanged(Location enhancedLocation, List<? extends Location> keyPoints) {
+
+        }
+    };
     private RouteProgressObserver routeProgressObserver = new RouteProgressObserver() {
+
         @Override
         public void onRouteProgressChanged(RouteProgress routeProgress) {
-            String routeProgressString = routeProgress.toString();
             WritableMap event = Arguments.createMap();
-            event.putString("progress", routeProgressString);
+
+//            BannerInstructions bannerInstructions = routeProgress.getBannerInstructions();
+//            if (bannerInstructions != null){
+//                event.putString("bannerInstructions",bannerInstructions.toJson());
+//            }
+            DirectionsRoute route = routeProgress.getRoute();
+
+            if (route != null){
+                sendRoute(route);
+            }
+            event.putString("currentState", String.valueOf(routeProgress.getCurrentState()));
+            RouteLegProgress routeLegProgress = routeProgress.getCurrentLegProgress();
+            if (routeLegProgress != null) {
+               // WritableMap routeLegProgressMap = Arguments.createMap();
+                event.putDouble("legDistanceRemaining",routeLegProgress.getDistanceRemaining());
+                event.putInt("legIndex",routeLegProgress.getLegIndex());
+                //routeLegProgressMap.putString("routeLeg",routeLegProgress.getRouteLeg().toJson());
+                event.putInt("stepIndex",routeLegProgress.getCurrentStepProgress().getStepIndex());
+                event.putDouble("stepDistanceRemaining",routeLegProgress.getCurrentStepProgress().getDistanceRemaining());
+               // event.putMap("routeLegProgress",routeLegProgressMap);
+            }
+            event.putDouble("distanceRemaining",routeProgress.getDistanceRemaining());
+            event.putDouble("distanceTraveled",routeProgress.getDistanceTraveled());
+            event.putDouble("durationRemaining",routeProgress.getDurationRemaining());
+            event.putDouble("distanceTraveled",routeProgress.getDistanceTraveled());
+            if (routeProgress.getUpcomingStepPoints() != null)
+                event.putString("upcomingStepPoints", routeProgress.getUpcomingStepPoints().toString());
+
+
+
             ReactContext reactContext = (ReactContext)getContext();
             reactContext
                     .getJSModule(RCTEventEmitter.class)
                     .receiveEvent(getId(), "topRouteProgress", event);
         }  
-        };
+    };
     private RoutesRequestCallback routesReqCallback = new RoutesRequestCallback() {
         @Override
         public void onRoutesReady(List<? extends DirectionsRoute> routes) {
-            String jsonRoute = routes.get(0).toJson();
-            WritableMap event = Arguments.createMap();
-            event.putString("route", jsonRoute);
-            ReactContext reactContext = (ReactContext)getContext();
-            reactContext
-                    .getJSModule(RCTEventEmitter.class)
-                    .receiveEvent(getId(), "topRoutesReady", event);
-            if (navigationCamera != null && MapboxNavigationProvider.isCreated()){
-                int[] padding = {0,0,0,0};
-         //       navigationCamera.showRouteOverview(padding);
-            }
+            sendRoute(routes.get(0));
+
+
         }
 
         @Override
@@ -95,6 +156,8 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
 
         }
     };
+
+
 
     private LifecycleOwner getLifecycleOwner(Context context){
 
@@ -142,15 +205,16 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
         mMapView = mapView;
 
         mapView.getMapAsync(this);
-//        setRenderMode(mRenderMode);
 
-
+        mapboxNavigation.registerRouteProgressObserver(routeProgressObserver);
+        mapboxNavigation.registerLocationObserver(locationObserver);
     }
 
     @Override
     public void removeFromMap(RCTMGLMapView mapView) {
         mEnabled = false;
-
+        mapboxNavigation.unregisterRouteProgressObserver(routeProgressObserver);
+        mapboxNavigation.unregisterLocationObserver(locationObserver);
     }
 
     @SuppressLint("MissingPermission")
@@ -183,7 +247,7 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
     private void updateRoute() {
         if (MapboxNavigationProvider.isCreated()) {
             if (navPoints.isEmpty()){
-                mapboxNavigation.setRoutes(null);
+                mapboxNavigation.setRoutes(new ArrayList<DirectionsRoute>());
             } else {
 //            Point origin = Point.fromLngLat(-97.760288, 30.273566);
 //            Point destination = Point.fromLngLat(-122.4127467, 37.7455558);

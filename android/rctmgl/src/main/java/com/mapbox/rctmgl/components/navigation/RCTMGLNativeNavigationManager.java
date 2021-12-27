@@ -30,6 +30,11 @@ public class RCTMGLNativeNavigationManager extends ViewGroupManager<RCTMGLNative
                                     "phasedRegistrationNames",
                                     MapBuilder.of("bubbled", "onRoutesReady")
                             ))
+                        .put("topLocation",
+                                MapBuilder.of(
+                                        "phasedRegistrationNames",
+                                        MapBuilder.of("bubbled", "onLocation")
+                                ))
                         .put("topRouteProgress",
                             MapBuilder.of(
                                     "phasedRegistrationNames",
