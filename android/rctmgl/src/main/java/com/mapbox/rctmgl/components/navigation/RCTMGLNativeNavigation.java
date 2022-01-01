@@ -130,7 +130,7 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
             event.putDouble("distanceTraveled",routeProgress.getDistanceTraveled());
             if (routeProgress.getUpcomingStepPoints() != null) {
                 WritableArray upcomingStepArray = Arguments.createArray();
-                List<Point> upcomingStepPoints = routeProgress.getUpcomingStepPoints()
+                List<Point> upcomingStepPoints = routeProgress.getUpcomingStepPoints();
                 for (int i = 0; i < upcomingStepPoints.size(); i++) {
                     upcomingStepArray.pushDouble(upcomingStepPoints.get(i).longitude());
                     upcomingStepArray.pushDouble(upcomingStepPoints.get(i).latitude());
