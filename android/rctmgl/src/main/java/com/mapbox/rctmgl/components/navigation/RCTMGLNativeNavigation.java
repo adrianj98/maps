@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.mapbox.api.directions.v5.models.BannerInstructions;
@@ -127,11 +128,15 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
             event.putDouble("distanceTraveled",routeProgress.getDistanceTraveled());
             event.putDouble("durationRemaining",routeProgress.getDurationRemaining());
             event.putDouble("distanceTraveled",routeProgress.getDistanceTraveled());
-            if (routeProgress.getUpcomingStepPoints() != null)
-                event.putString("upcomingStepPoints", routeProgress.getUpcomingStepPoints().toString());
-
-
-
+            if (routeProgress.getUpcomingStepPoints() != null) {
+                WritableArray upcomingStepArray = Arguments.createArray();
+                List<Point> upcomingStepPoints = routeProgress.getUpcomingStepPoints();
+                for (int i = 0; i < upcomingStepPoints.size(); i++) {
+                    upcomingStepArray.pushDouble(upcomingStepPoints.get(i).longitude());
+                    upcomingStepArray.pushDouble(upcomingStepPoints.get(i).latitude());
+                }
+                event.putArray("upcomingStepPoints", upcomingStepArray);
+            }
             ReactContext reactContext = (ReactContext)getContext();
             reactContext
                     .getJSModule(RCTEventEmitter.class)
