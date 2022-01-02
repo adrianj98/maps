@@ -53,6 +53,7 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
     private NavigationMapRoute navigationMapRoute;
     private NavigationCamera navigationCamera = null;
     private List<Point> navPoints;
+    private List<String> navAnnotations;
     private String accessT = "pk.eyJ1IjoiYWRyaWFuaiIsImEiOiJja3U3MzczNDIyYmdzMnZxZ2V4NGVybjFyIn0.MJFUX8Ubizy0yaf4jGiXaA";
 
 
@@ -233,7 +234,11 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
 
 
 
+    public void setAnnotations(List<String> annotations) {
+        navAnnotations = annotations;
+        updateRoute();
 
+    }
     public void setCoordinates(List<Point> points) {
         navPoints = points;
         updateRoute();
@@ -255,16 +260,22 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
 //            points.add(origin);
 //            points.add(destination);
 
+                RouteOptions.Builder buildOptions = MapboxRouteOptionsUtils.applyDefaultParams(RouteOptions.builder())
+                        .accessToken(accessT)
+                        .coordinates(navPoints)
+                        .steps(true)
+                        .alternatives(true)
+                        .voiceInstructions(true)
+                        .geometries(RouteUrl.GEOMETRY_POLYLINE6)
+                        .profile(RouteUrl.PROFILE_DRIVING)
+                        .bannerInstructions(true);
+
+                if (!navAnnotations.isEmpty()) {
+                    buildOptions.annotationsList(navAnnotations);
+                }
+
                 mapboxNavigation.requestRoutes(
-                        MapboxRouteOptionsUtils.applyDefaultParams(RouteOptions.builder())
-                                .accessToken(accessT)
-                                .coordinates(navPoints)
-                                .steps(true)
-                                .voiceInstructions(true)
-                                .geometries(RouteUrl.GEOMETRY_POLYLINE6)
-                                .profile(RouteUrl.PROFILE_DRIVING)
-                                .bannerInstructions(true)
-                                .build(),
+                     buildOptions.build(),
                         routesReqCallback);
 
                 mapboxNavigation.startTripSession();

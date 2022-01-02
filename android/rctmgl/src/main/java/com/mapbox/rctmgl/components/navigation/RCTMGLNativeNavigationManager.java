@@ -52,6 +52,15 @@ public class RCTMGLNativeNavigationManager extends ViewGroupManager<RCTMGLNative
         navigation.setCoordinates(coords);
     }
 
+    @ReactProp(name="annotations")
+    public void setAnnotations(RCTMGLNativeNavigation navigation, ReadableArray annotations) {
+        List<String> annotationsList = new ArrayList<String>();
+        for (int i = 0; i < annotations.size() ; i++) {
+            annotationsList.add(annotations.getString(i));
+        }
+        navigation.setAnnotations(annotationsList);
+    }
+
     @Nonnull
     @Override
     protected RCTMGLNativeNavigation createViewInstance(@Nonnull ThemedReactContext reactContext) {
