@@ -247,6 +247,7 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
     public void setEnabled(boolean enabled) {
        if (enabled) {
            mapboxNavigation.startTripSession();
+           updateRoute();
        } else {
            mapboxNavigation.stopTripSession();
        }
