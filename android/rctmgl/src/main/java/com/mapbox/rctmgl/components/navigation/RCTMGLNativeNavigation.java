@@ -32,6 +32,7 @@ import com.mapbox.api.directions.v5.models.RouteOptions;
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback;
 import com.mapbox.navigation.core.trip.session.LocationObserver;
 import com.mapbox.navigation.core.trip.session.RouteProgressObserver;
+import com.mapbox.navigation.core.trip.session.TripSessionState;
 import com.mapbox.navigation.ui.camera.NavigationCamera;
 
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -244,10 +245,13 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
         updateRoute();
 
     }
-    public void setEnabled(boolean enabled) {
-       if (enabled) {
-           mapboxNavigation.startTripSession();
+    public void setNavigationEnabled(boolean enabled) {
+
+
+       if (enabled &&  mapboxNavigation.getTripSessionState() == TripSessionState.STOPPED) {
            updateRoute();
+           mapboxNavigation.startTripSession();
+
        } else {
            mapboxNavigation.stopTripSession();
        }
