@@ -225,7 +225,7 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
         navigationMapRoute = new NavigationMapRoute.Builder(mMapView, mMap,getLifecycleOwner(getContext()))
                 .withMapboxNavigation(mapboxNavigation)
                 .build();
-        mapboxNavigation.startTripSession();
+
 
         navigationCamera = new NavigationCamera(mMap);
         enableLocationComponent();
@@ -244,6 +244,14 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
         updateRoute();
 
     }
+    public void setEnabled(boolean enabled) {
+       if (enabled) {
+           mapboxNavigation.startTripSession();
+       } else {
+           mapboxNavigation.stopTripSession();
+       }
+    }
+
 
     public void setRoute() {
 
