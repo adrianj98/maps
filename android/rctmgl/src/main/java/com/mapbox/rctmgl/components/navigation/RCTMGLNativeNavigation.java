@@ -248,11 +248,13 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
     public void setNavigationEnabled(boolean enabled) {
 
 
-       if (enabled &&  mapboxNavigation.getTripSessionState() == TripSessionState.STOPPED) {
-           updateRoute();
-           mapboxNavigation.startTripSession();
+       if (enabled) {
+           if (mapboxNavigation.getTripSessionState() == TripSessionState.STOPPED) {
+             //  updateRoute();
+               mapboxNavigation.startTripSession();
+           }
 
-       } else {
+       } else  {
            mapboxNavigation.stopTripSession();
        }
     }
@@ -280,10 +282,10 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
                         .alternatives(true)
                         .voiceInstructions(true)
                         .geometries(RouteUrl.GEOMETRY_POLYLINE6)
-                        .profile(RouteUrl.PROFILE_DRIVING)
+                        .profile(RouteUrl.PROFILE_DRIVING_TRAFFIC)
                         .bannerInstructions(true);
 
-                if (!navAnnotations.isEmpty()) {
+                if (navAnnotations != null &&!navAnnotations.isEmpty()) {
                     buildOptions.annotationsList(navAnnotations);
                 }
 
@@ -291,7 +293,7 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
                      buildOptions.build(),
                         routesReqCallback);
 
-                mapboxNavigation.startTripSession();
+              
             }
         }
 

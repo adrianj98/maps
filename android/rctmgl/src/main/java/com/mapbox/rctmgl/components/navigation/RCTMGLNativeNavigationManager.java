@@ -54,7 +54,7 @@ public class RCTMGLNativeNavigationManager extends ViewGroupManager<RCTMGLNative
 
     @ReactProp(name="enableNavigation")
     public void enableNavigation(RCTMGLNativeNavigation navigation, boolean enabled) {
-      //  navigation.setNavigationEnabled(enabled);
+       navigation.setNavigationEnabled(enabled);
     }
 
     @ReactProp(name="annotations")
