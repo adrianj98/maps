@@ -58,6 +58,7 @@ import com.mapbox.rctmgl.components.annotation.MarkerViewManager;
 import com.mapbox.rctmgl.components.camera.RCTMGLCamera;
 import com.mapbox.rctmgl.components.images.RCTMGLImages;
 import com.mapbox.rctmgl.components.location.LocationComponentManager;
+import com.mapbox.rctmgl.components.navigation.RCTMGLNativeNavigation;
 import com.mapbox.rctmgl.components.location.RCTMGLNativeUserLocation;
 import com.mapbox.rctmgl.components.mapview.helpers.CameraChangeTracker;
 import com.mapbox.rctmgl.components.styles.layers.RCTLayer;
@@ -227,6 +228,8 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
         } else if (childView instanceof RCTMGLLight) {
             feature = (AbstractMapFeature) childView;
         } else if (childView instanceof RCTMGLNativeUserLocation) {
+            feature = (AbstractMapFeature) childView;
+        } else if (childView instanceof RCTMGLNativeNavigation) {
             feature = (AbstractMapFeature) childView;
         }  else if (childView instanceof RCTMGLPointAnnotation) {
             RCTMGLPointAnnotation annotation = (RCTMGLPointAnnotation) childView;
