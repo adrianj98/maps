@@ -27,17 +27,20 @@ import com.mapbox.navigation.base.options.NavigationOptions;
 import com.mapbox.navigation.base.trip.model.RouteLegProgress;
 import com.mapbox.navigation.base.trip.model.RouteProgress;
 import com.mapbox.navigation.core.MapboxNavigation;
+
+
 import com.mapbox.navigation.core.MapboxNavigationProvider;
 import com.mapbox.api.directions.v5.models.RouteOptions;
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback;
 import com.mapbox.navigation.core.trip.session.LocationObserver;
 import com.mapbox.navigation.core.trip.session.RouteProgressObserver;
 import com.mapbox.navigation.core.trip.session.TripSessionState;
-import com.mapbox.navigation.ui.camera.NavigationCamera;
+//import com.mapbox.navigation.ui.camera.NavigationCamera;
 
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
-import com.mapbox.navigation.ui.route.NavigationMapRoute;
+
+//import com.mapbox.navigation.ui.route.NavigationMapRoute;
 import com.mapbox.rctmgl.components.AbstractMapFeature;
 import com.mapbox.rctmgl.components.mapview.RCTMGLMapView;
 
@@ -51,8 +54,8 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
     private NavigationOptions navigationOptions;
     private MapboxNavigation mapboxNavigation;
     private LocationComponent locationComponent;
-    private NavigationMapRoute navigationMapRoute;
-    private NavigationCamera navigationCamera = null;
+  //  private NavigationMapRoute navigationMapRoute;
+    //private NavigationCamera navigationCamera = null;
     private List<Point> navPoints;
     private List<String> navAnnotations;
     private String accessT = "pk.eyJ1IjoiYWRyaWFuaiIsImEiOiJja3U3MzczNDIyYmdzMnZxZ2V4NGVybjFyIn0.MJFUX8Ubizy0yaf4jGiXaA";
@@ -223,12 +226,12 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         mMap = mapboxMap;
-        navigationMapRoute = new NavigationMapRoute.Builder(mMapView, mMap,getLifecycleOwner(getContext()))
-                .withMapboxNavigation(mapboxNavigation)
-                .build();
+//        navigationMapRoute = new NavigationMapRoute.Builder(mMapView, mMap,getLifecycleOwner(getContext()))
+//                .withMapboxNavigation(mapboxNavigation)
+//                .build();
 
 
-        navigationCamera = new NavigationCamera(mMap);
+   //     navigationCamera = new NavigationCamera(mMap);
         enableLocationComponent();
         updateRoute();
     }
@@ -275,9 +278,35 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
 //            points.add(origin);
 //            points.add(destination);
 
-                RouteOptions.Builder buildOptions = MapboxRouteOptionsUtils.applyDefaultParams(RouteOptions.builder())
-                        .accessToken(accessT)
-                        .coordinates(navPoints)
+
+//
+//                mapboxNavigation.requestRoutes(
+//                                routeOptions,
+//                                object : RouterCallback {
+//                            override fun onRoutesReady(
+//                                    routes: List<DirectionsRoute>,
+//                            routerOrigin: RouterOrigin
+//                ) {
+//                                mapboxNavigation.setRoutes(routes)
+//                            }
+//
+//                            override fun onFailure(
+//                                    reasons: List<RouterFailure>,
+//                            routeOptions: RouteOptions
+//                ) {
+//                                // no impl
+//                            }
+//
+//                            override fun onCanceled(routeOptions: RouteOptions, routerOrigin: RouterOrigin) {
+//                                // no impl
+//                            }
+//                        }
+//        )
+                RouteOptions.Builder buildOptions = RouteOptions.builder()
+                        .applyDefaultNavigationOptions()
+                        .coordinatesList(
+                                navPoints
+                        )
                         .steps(true)
                         .alternatives(true)
                         .voiceInstructions(true)

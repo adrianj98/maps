@@ -17,6 +17,7 @@ import com.mapbox.rctmgl.components.annotation.RCTMGLMarkerViewManager;
 import com.mapbox.rctmgl.components.camera.RCTMGLCameraManager;
 import com.mapbox.rctmgl.components.images.RCTMGLImagesManager;
 import com.mapbox.rctmgl.components.location.RCTMGLNativeUserLocationManager;
+import com.mapbox.rctmgl.components.navigation.RCTMGLNativeNavigationManager;
 import com.mapbox.rctmgl.components.mapview.RCTMGLMapViewManager;
 import com.mapbox.rctmgl.components.mapview.RCTMGLAndroidTextureMapViewManager;
 import com.mapbox.rctmgl.components.styles.layers.RCTMGLBackgroundLayerManager;
