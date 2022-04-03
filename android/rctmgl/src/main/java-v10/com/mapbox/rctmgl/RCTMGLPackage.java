@@ -12,6 +12,8 @@ import java.util.List;
 
 import com.mapbox.rctmgl.components.camera.RCTMGLCameraManager;
 
+import com.mapbox.rctmgl.components.navigation.RCTMGLNativeNavigationManager;
+
 import com.mapbox.rctmgl.components.annotation.RCTMGLCalloutManager;
 import com.mapbox.rctmgl.components.annotation.RCTMGLPointAnnotationManager;
 import com.mapbox.rctmgl.components.annotation.RCTMGLMarkerViewManager;
@@ -77,6 +79,7 @@ public class RCTMGLPackage implements ReactPackage {
         managers.add(new RCTMGLAndroidTextureMapViewManager(reactApplicationContext));
         managers.add(new RCTMGLMapViewManager(reactApplicationContext));
         managers.add(new RCTMGLMarkerViewManager(reactApplicationContext));
+        managers.add(new RCTMGLNativeNavigationManager(reactApplicationContext));
 
         managers.add(new RCTMGLLightManager());
 

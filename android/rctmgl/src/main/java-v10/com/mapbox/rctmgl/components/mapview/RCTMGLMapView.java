@@ -82,6 +82,8 @@ import com.mapbox.maps.extension.observable.model.MapLoadErrorType;
 import com.mapbox.maps.plugin.delegates.MapPluginProviderDelegate;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
+import com.mapbox.rctmgl.components.navigation.RCTMGLNativeNavigationManager;
+
 
 import com.mapbox.maps.plugin.gestures.OnMapClickListener;
 import com.mapbox.maps.viewannotation.ViewAnnotationManager;
@@ -333,6 +335,10 @@ public class RCTMGLMapView extends MapView implements OnMapClickListener {
             feature = (AbstractMapFeature) childView;
         } else if (childView instanceof RCTLayer) {
             feature = (RCTLayer) childView;
+        } else if (childView instanceof RCTMGLNativeNavigationManager) {
+            feature = (RCTMGLNativeNavigationManager) childView;
+
+
         } else if (childView instanceof ViewGroup) {
             ViewGroup children = (ViewGroup) childView;
 
