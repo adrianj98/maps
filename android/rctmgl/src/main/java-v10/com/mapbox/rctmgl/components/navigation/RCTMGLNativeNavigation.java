@@ -42,6 +42,7 @@ import com.mapbox.navigation.core.trip.session.TripSessionState;
 
 ////import com.mapbox.navigation.ui.camera.NavigationCamera;
 //
+import com.mapbox.rctmgl.components.navigation.RCTMGLNativeNavigationManager;
 import com.mapbox.rctmgl.components.mapview.OnMapReadyCallback;
 
 
@@ -56,6 +57,7 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
     private boolean mEnabled = true;
     private MapboxMap mMap;
     private RCTMGLMapView mMapView;
+    private RCTMGLNativeNavigationManager mManager;
     private NavigationOptions  navigationOptions;
     private MapboxNavigation mapboxNavigation;
  //   private LocationComponent locationComponent;
@@ -184,9 +186,9 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
     }
 
 
-    public RCTMGLNativeNavigation(Context context) {
+    public RCTMGLNativeNavigation(Context context,RCTMGLNativeNavigationManager manager) {
         super(context);
-
+        mManager = manager;
 
         navigationOptions = new NavigationOptions.Builder(context)
                 .accessToken(accessT)

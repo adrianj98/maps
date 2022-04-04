@@ -1,5 +1,6 @@
 package com.mapbox.rctmgl.components.navigation;
 
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -7,7 +8,9 @@ import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.mapbox.geojson.Point;
 import com.mapbox.rctmgl.components.AbstractEventEmitter;
+import com.mapbox.rctmgl.components.camera.RCTMGLCamera;
 import com.mapbox.rctmgl.components.mapview.RCTMGLMapView;
+import com.mapbox.rctmgl.events.constants.EventKeys;
 //import com.mapbox.maps.plugin.location.modes.RenderMode;
 
 import java.util.ArrayList;
@@ -19,30 +22,24 @@ import javax.annotation.Nonnull;
 public class RCTMGLNativeNavigationManager extends AbstractEventEmitter<RCTMGLNativeNavigation> {
     public static final String REACT_CLASS = "RCTMGLNativeNavigation";
 
-    @Nonnull
     @Override
     public String getName() {
         return REACT_CLASS;
     }
 
-    public Map getExportedCustomBubblingEventTypeConstants() {
-        return MapBuilder.builder()
-                        .put("topRoutesReady",
-                            MapBuilder.of(
-                                    "phasedRegistrationNames",
-                                    MapBuilder.of("bubbled", "onRoutesReady")
-                            ))
-                        .put("topLocation",
-                                MapBuilder.of(
-                                        "phasedRegistrationNames",
-                                        MapBuilder.of("bubbled", "onLocation")
-                                ))
-                        .put("topRouteProgress",
-                            MapBuilder.of(
-                                    "phasedRegistrationNames",
-                                    MapBuilder.of("bubbled", "onRouteProgress"))
+    public RCTMGLNativeNavigationManager(ReactApplicationContext reactApplicationContext) {
+        super(reactApplicationContext);
+    }
 
-        ).build();
+    @Override
+    public Map<String, String> customEvents() {
+        return MapBuilder.<String, String>builder()
+                        .put("topRoutesReady","onRoutesReady")
+
+                        .put("topLocation","onLocation")
+                        .put("topRouteProgress","onRouteProgress")
+
+        .build();
     }
 
     @ReactProp(name="coordinates")
@@ -68,9 +65,8 @@ public class RCTMGLNativeNavigationManager extends AbstractEventEmitter<RCTMGLNa
         navigation.setAnnotations(annotationsList);
     }
 
-    @Nonnull
     @Override
-    protected RCTMGLNativeNavigation createViewInstance(@Nonnull ThemedReactContext reactContext) {
-        return new RCTMGLNativeNavigation(reactContext);
+    protected RCTMGLNativeNavigation createViewInstance(ThemedReactContext reactContext) {
+        return new RCTMGLNativeNavigation(reactContext,this);
     }
 }
