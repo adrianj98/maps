@@ -21,6 +21,8 @@ import com.mapbox.maps.MapboxMap;
 //import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 //import com.mapbox.mapboxsdk.location.modes.CameraMode;
 //import com.mapbox.mapboxsdk.location.modes.RenderMode;
+import com.mapbox.api.directions.v5.DirectionsCriteria;
+import com.mapbox.api.directions.v5.MapboxDirections;
 //
 import com.mapbox.navigation.base.options.NavigationOptions;
 import com.mapbox.navigation.base.trip.model.RouteLegProgress;
@@ -37,8 +39,8 @@ import com.mapbox.navigation.base.route.RouterCallback;
 import com.mapbox.navigation.core.trip.session.LocationObserver;
 import com.mapbox.navigation.core.trip.session.RouteProgressObserver;
 import com.mapbox.navigation.core.trip.session.TripSessionState;
-//import com.mapbox.navigation.base.extensions.applyDefaultNavigationOptions;
-//import com.mapbox.navigation.base.extensions.applyLanguageAndVoiceUnitOptions;
+// import com.mapbox.navigation.base.extensions.applyLanguageAndVoiceUnitOptions;
+// import com.mapbox.navigation.base.extensions.applyDefaultNavigationOptions;
 
 ////import com.mapbox.navigation.ui.camera.NavigationCamera;
 //
@@ -310,12 +312,14 @@ public class RCTMGLNativeNavigation extends AbstractMapFeature implements OnMapR
 //        )
                 RouteOptions.Builder routeOptionsBuilder =  RouteOptions.builder()
                       //  .applyDefaultNavigationOptions()
+                      
                         .coordinatesList(
                                 navPoints
                         )
                         .steps(true)
                         .alternatives(true)
                         .voiceInstructions(true)
+                        .profile(DirectionsCriteria.PROFILE_CYCLING)
                      //   .geometries(RouteUrl.GEOMETRY_POLYLINE6)
                      //   .profile(RouteUrl.PROFILE_DRIVING_TRAFFIC)
                         .bannerInstructions(true);
